@@ -56,5 +56,34 @@ namespace EmployeePayroll
                 this.sqlConnection.Close();
             }
         }
+        public void UpdateSalary(EmployeeData data)
+        {
+            try
+            {
+                sqlConnection.Open();
+                //query to update salary
+                string query = @"update payroll_table set BasicPay=3000000 where name='Chandler'";
+                SqlCommand command = new SqlCommand(query, sqlConnection);
+                int result = command.ExecuteNonQuery();
+                if (result != 0)
+                {
+                    Console.WriteLine("Salary Updated ");
+                }
+                else
+                {
+                    Console.WriteLine("Salary Not Updated");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+
+            }
+
+        }
     }
 }
