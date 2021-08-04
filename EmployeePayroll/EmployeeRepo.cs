@@ -37,7 +37,7 @@ namespace EmployeePayroll
                         employee.TaxablePay = Convert.ToDouble(reader["TaxablePay"]);
                         employee.IncomeTax = Convert.ToDouble(reader["IncomeTax"]);
                         employee.NetPay = Convert.ToDouble(reader["NetPay"]);
-                        Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.PhoneNumber, employee.StartDate, employee.Address, employee.Department,employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
+                        Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.PhoneNumber, employee.StartDate, employee.Address, employee.Department,employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
                     }
                 }
                 else
@@ -56,22 +56,31 @@ namespace EmployeePayroll
                 this.sqlConnection.Close();
             }
         }
-        public void UpdateSalary(EmployeeData data)
+        public void UpdateSalary()
         {
+            EmployeeData employee = new EmployeeData();
+            employee.EmployeeName = "Terissa";
+            employee.EmployeeId = 5;
+            employee.BasicPay = 3000000;
             try
             {
-                sqlConnection.Open();
-                //query to update salary
-                string query = @"update payroll_table set BasicPay=3000000 where name='Chandler'";
-                SqlCommand command = new SqlCommand(query, sqlConnection);
-                int result = command.ExecuteNonQuery();
-                if (result != 0)
+                using (this.sqlConnection)
                 {
-                    Console.WriteLine("Salary Updated ");
-                }
-                else
-                {
-                    Console.WriteLine("Salary Not Updated");
+                    SqlCommand command = new SqlCommand("dbo.UpdateSalaryPayRoll_Salary", this.sqlConnection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    this.sqlConnection.Open();
+                    command.Parameters.AddWithValue("@Employee_ID", employee.EmployeeId);
+                    command.Parameters.AddWithValue("@Employee_Name", employee.EmployeeName);
+                    command.Parameters.AddWithValue("@BasicPay", employee.BasicPay);
+                    int result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        Console.WriteLine("Salary Updated ");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Salary Not Updated");
+                    }
                 }
             }
             catch (Exception ex)
@@ -80,7 +89,7 @@ namespace EmployeePayroll
             }
             finally
             {
-                sqlConnection.Close();
+                this.sqlConnection.Close();
 
             }
 
