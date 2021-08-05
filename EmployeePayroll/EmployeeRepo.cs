@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace EmployeePayroll
 {
-    class EmployeeRepo
+    public class EmployeeRepo
     {
         public static string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=employee_payroll";
         //creating sql connection 
@@ -56,7 +56,7 @@ namespace EmployeePayroll
                 this.sqlConnection.Close();
             }
         }
-        public void UpdateSalary()
+        public int UpdateSalary()
         {
             EmployeeData employee = new EmployeeData();
             employee.EmployeeName = "Terissa";
@@ -73,6 +73,7 @@ namespace EmployeePayroll
                     command.Parameters.AddWithValue("@Employee_Name", employee.EmployeeName);
                     command.Parameters.AddWithValue("@BasicPay", employee.BasicPay);
                     int result = command.ExecuteNonQuery();
+                    
                     if (result != 0)
                     {
                         Console.WriteLine("Salary Updated ");
@@ -81,11 +82,13 @@ namespace EmployeePayroll
                     {
                         Console.WriteLine("Salary Not Updated");
                     }
+                    return result;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return default;
             }
             finally
             {
