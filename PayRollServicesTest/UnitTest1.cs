@@ -14,11 +14,19 @@ namespace PayRollServicesTest
             data = new EmployeeData();
         }
         [TestMethod]
-        public void TestMethod1()
+        public void TestUpdateSalary()
         {
             int expected = 1;
             int actual = emp.UpdateSalary();
             Assert.AreEqual(actual, expected);
         }
+        [TestMethod]
+        public void TestRetrieveDataOnDateRange()
+        {
+            data.EmployeeName = "Chandler";
+            var actual = emp.RetrieveDataOnDateRange();
+            Assert.AreEqual(actual.EmployeeName, data.EmployeeName);
+        }
+
     }
 }
