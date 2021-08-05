@@ -18,8 +18,8 @@ namespace EmployeePayroll
                     emp.GetAllData();
                     break;
                 case 2:
-                    emp.UpdateSalary(data);
-                    emp.GetAllData();
+                    emp.UpdateSalary();
+                    
                     break;
                 default:
                     break;
