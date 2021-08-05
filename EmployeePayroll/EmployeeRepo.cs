@@ -30,14 +30,14 @@ namespace EmployeePayroll
                         employee.Gender = reader["Gender"].ToString();
                         employee.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
                         employee.StartDate = reader.GetDateTime(2);
-                        employee.Address = reader.GetString(6);
+                        employee.Address = reader.GetString(5);
                         employee.Department = reader.GetString(6);
                         employee.BasicPay = Convert.ToDouble(reader["BasicPay"]);
                         employee.Deductions = Convert.ToDouble(reader["Deductions"]);
                         employee.TaxablePay = Convert.ToDouble(reader["TaxablePay"]);
                         employee.IncomeTax = Convert.ToDouble(reader["IncomeTax"]);
                         employee.NetPay = Convert.ToDouble(reader["NetPay"]);
-                        Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.PhoneNumber, employee.StartDate, employee.Address, employee.Department,employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
+                        Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.PhoneNumber, employee.StartDate, employee.Address, employee.Department, employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
                     }
                 }
                 else
@@ -66,14 +66,15 @@ namespace EmployeePayroll
             {
                 using (this.sqlConnection)
                 {
+                    //Passing the procedure and connection string
                     SqlCommand command = new SqlCommand("dbo.UpdateSalaryPayRoll_Salary", this.sqlConnection);
                     command.CommandType = System.Data.CommandType.StoredProcedure;
+                    //open connection
                     this.sqlConnection.Open();
                     command.Parameters.AddWithValue("@Employee_ID", employee.EmployeeId);
                     command.Parameters.AddWithValue("@Employee_Name", employee.EmployeeName);
                     command.Parameters.AddWithValue("@BasicPay", employee.BasicPay);
                     int result = command.ExecuteNonQuery();
-                    
                     if (result != 0)
                     {
                         Console.WriteLine("Salary Updated ");
@@ -96,6 +97,67 @@ namespace EmployeePayroll
 
             }
 
+        }
+        public EmployeeData RetrieveDataOnDateRange()
+        {
+            EmployeeData employee = new EmployeeData();
+            employee.EmployeeName = "Chandler";
+            try
+            {
+                using (this.sqlConnection)
+                {
+                    //Passing procedure and connection string
+                    SqlCommand sqlCommand = new SqlCommand("dbo.RetriveDataByName", this.sqlConnection);
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    //open connection
+                    this.sqlConnection.Open();
+
+                    sqlCommand.Parameters.AddWithValue("@name", employee.EmployeeName);
+                    //Retrieve query
+                    string query = @"select * from employee_payroll where startDate between('2021-07-23') and getdate()";
+                    SqlCommand command = new SqlCommand(query, this.sqlConnection);
+                    SqlDataReader reader = sqlCommand.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            employee.EmployeeId = Convert.ToInt32(reader["id"]);
+                            employee.EmployeeName = reader["Name"].ToString();
+                            employee.Gender = reader["Gender"].ToString();
+                            employee.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
+                            employee.StartDate = reader.GetDateTime(2);
+                            employee.Address = reader.GetString(5);
+                            employee.Department = reader.GetString(6);
+                            employee.BasicPay = Convert.ToDouble(reader["BasicPay"]);
+                            employee.Deductions = Convert.ToDouble(reader["Deductions"]);
+                            employee.TaxablePay = Convert.ToDouble(reader["TaxablePay"]);
+                            employee.IncomeTax = Convert.ToDouble(reader["IncomeTax"]);
+                            employee.NetPay = Convert.ToDouble(reader["NetPay"]);
+
+                            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.PhoneNumber, employee.StartDate, employee.Address, employee.Department, employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
+                        }
+                        reader.Close();
+                        return employee;
+                    }
+                    else
+                    {
+                        reader.Close();
+                        return employee;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return default;
+            }
+
+            finally
+            {
+                this.sqlConnection.Close();
+            }
         }
     }
 }
