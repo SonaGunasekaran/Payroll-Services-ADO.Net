@@ -159,5 +159,42 @@ namespace EmployeePayroll
                 this.sqlConnection.Close();
             }
         }
+        public string AggregateFunctionsGroupByGender( )
+        {
+            string result = null;
+            try
+            {
+                string query = @"select sum(BasicPay) as TotalSalary,min(BasicPay) as MinSalary,max(BasicPay) as MaxSalary, avg(BasicPay) as AvgSalary from payroll_table where Gender ='M' group by Gender";
+                SqlCommand sqlCommand = new SqlCommand(query, this.sqlConnection);
+                sqlConnection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine("Total Salary {0}", reader[0]);
+                        Console.WriteLine("Min Salary {0}", reader[1]);
+                        Console.WriteLine("Max Salary {0}", reader[2]);
+                        Console.WriteLine("Average Salary {0}", reader[3]);
+                        result += reader[0] + " " + reader[1] + " " + reader[2] + " " + reader[3];
+                    }
+                }
+                else
+                {
+                    result = "empty";
+                }
+                reader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                this.sqlConnection.Close();
+            }
+            return result;
+        }
     }
 }
