@@ -27,6 +27,13 @@ namespace PayRollServicesTest
             var actual = emp.RetrieveDataOnDateRange();
             Assert.AreEqual(actual.EmployeeName, data.EmployeeName);
         }
+        [TestMethod]
+        public void TestMethodForAggregateFunction_GroupByFemale()
+        {
+            string expected = "3018000 8000 3000000 1006000";
+            string actual = emp.AggregateFunctionsGroupByGender();
+            Assert.AreEqual(actual, expected);
 
+        }
     }
 }
