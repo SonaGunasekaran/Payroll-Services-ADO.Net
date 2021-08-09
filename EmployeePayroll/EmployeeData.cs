@@ -14,7 +14,8 @@ namespace EmployeePayroll
         public double PhoneNumber { get; set; }
         public string StartDate { get; set; }
         public string Address { get; set; }
-
+        public string City { get; set; }
+        public string State { get; set; }
         public string Department { get; set; }
         public double BasicPay { get; set; }
         public double NetPay { get; set; }

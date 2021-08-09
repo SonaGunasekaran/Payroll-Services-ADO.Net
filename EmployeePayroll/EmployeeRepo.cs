@@ -120,7 +120,7 @@ namespace EmployeePayroll
                             employee.EmployeeName = reader["Name"].ToString();
                             employee.Gender = reader["Gender"].ToString();
                             employee.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
-                            employee.StartDate = reader.GetDateTime(2).ToString(); 
+                            employee.StartDate = reader.GetDateTime(2).ToString();
                             employee.Address = reader.GetString(5);
                             employee.Department = reader.GetString(6);
                             employee.BasicPay = Convert.ToDouble(reader["BasicPay"]);
@@ -128,7 +128,6 @@ namespace EmployeePayroll
                             employee.TaxablePay = Convert.ToDouble(reader["TaxablePay"]);
                             employee.IncomeTax = Convert.ToDouble(reader["IncomeTax"]);
                             employee.NetPay = Convert.ToDouble(reader["NetPay"]);
-
                             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.PhoneNumber, employee.StartDate, employee.Address, employee.Department, employee.BasicPay, employee.Deductions, employee.TaxablePay, employee.IncomeTax, employee.NetPay);
                         }
                         reader.Close();
@@ -210,7 +209,7 @@ namespace EmployeePayroll
                     sqlCommand.Parameters.AddWithValue("@Deduction", employee.Deductions);
                     sqlCommand.Parameters.AddWithValue("@IncomeTax", employee.IncomeTax);
                     sqlCommand.Parameters.AddWithValue("@TaxablePay", employee.TaxablePay);
-                   int result = sqlCommand.ExecuteNonQuery();
+                    int result = sqlCommand.ExecuteNonQuery();
                     if (result != 0)
                     {
                         count++;
@@ -228,7 +227,7 @@ namespace EmployeePayroll
                 sqlConnection.Close();
             }
             return count;
-         
+
         }
     }
 }
