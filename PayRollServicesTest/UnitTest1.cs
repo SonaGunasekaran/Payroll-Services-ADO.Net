@@ -1,5 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EmployeePayroll;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 namespace PayRollServicesTest
 {
     [TestClass]
@@ -69,6 +72,13 @@ namespace PayRollServicesTest
             int actual = new Transaction().CascadeDelete();
             Assert.AreEqual(expected, actual);
         }
+        [TestMethod]
+        public void TestInsertWithoutThread()
+        {
+            long actual = new Transaction().InsertWithoutThread();
+            Console.WriteLine("" + actual);
+        }
+
 
 
     }
