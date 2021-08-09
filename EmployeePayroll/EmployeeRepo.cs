@@ -29,7 +29,7 @@ namespace EmployeePayroll
                         employee.EmployeeName = reader["Name"].ToString();
                         employee.Gender = reader["Gender"].ToString();
                         employee.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
-                        employee.StartDate = reader.GetDateTime(2);
+                        employee.StartDate = reader.GetDateTime(2).ToString();
                         employee.Address = reader.GetString(5);
                         employee.Department = reader.GetString(6);
                         employee.BasicPay = Convert.ToDouble(reader["BasicPay"]);
@@ -66,10 +66,8 @@ namespace EmployeePayroll
             {
                 using (this.sqlConnection)
                 {
-                    //Passing the procedure and connection string
                     SqlCommand command = new SqlCommand("dbo.UpdateSalaryPayRoll_Salary", this.sqlConnection);
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    //open connection
                     this.sqlConnection.Open();
                     command.Parameters.AddWithValue("@Employee_ID", employee.EmployeeId);
                     command.Parameters.AddWithValue("@Employee_Name", employee.EmployeeName);
@@ -106,14 +104,10 @@ namespace EmployeePayroll
             {
                 using (this.sqlConnection)
                 {
-                    //Passing procedure and connection string
                     SqlCommand sqlCommand = new SqlCommand("dbo.RetriveDataByName", this.sqlConnection);
                     sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                    //open connection
                     this.sqlConnection.Open();
-
                     sqlCommand.Parameters.AddWithValue("@name", employee.EmployeeName);
-                    //Retrieve query
                     string query = @"select * from employee_payroll where startDate between('2021-07-23') and getdate()";
                     SqlCommand command = new SqlCommand(query, this.sqlConnection);
                     SqlDataReader reader = sqlCommand.ExecuteReader();
@@ -126,7 +120,7 @@ namespace EmployeePayroll
                             employee.EmployeeName = reader["Name"].ToString();
                             employee.Gender = reader["Gender"].ToString();
                             employee.PhoneNumber = Convert.ToDouble(reader["PhoneNumber"]);
-                            employee.StartDate = reader.GetDateTime(2);
+                            employee.StartDate = reader.GetDateTime(2).ToString(); 
                             employee.Address = reader.GetString(5);
                             employee.Department = reader.GetString(6);
                             employee.BasicPay = Convert.ToDouble(reader["BasicPay"]);
@@ -159,7 +153,7 @@ namespace EmployeePayroll
                 this.sqlConnection.Close();
             }
         }
-        public string AggregateFunctionsGroupByGender( )
+        public string AggregateFunctionsGroupByGender()
         {
             string result = null;
             try
@@ -195,6 +189,46 @@ namespace EmployeePayroll
                 this.sqlConnection.Close();
             }
             return result;
+        }
+        public int InsertNewRecord(EmployeeData employee)
+        {
+            int count = 0;
+            try
+            {
+                using (sqlConnection)
+                {
+
+                    SqlCommand sqlCommand = new SqlCommand("dbo.InsertAddressBookTable1", sqlConnection);
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlConnection.Open();
+                    sqlCommand.Parameters.AddWithValue("@EmployeeName", employee.EmployeeName);
+                    sqlCommand.Parameters.AddWithValue("@Gender", employee.Gender);
+                    sqlCommand.Parameters.AddWithValue("@Phonenumber", employee.PhoneNumber);
+                    sqlCommand.Parameters.AddWithValue("@Address", employee.Address);
+                    sqlCommand.Parameters.AddWithValue("@Department", employee.Department);
+                    sqlCommand.Parameters.AddWithValue("@BasicPay", employee.BasicPay);
+                    sqlCommand.Parameters.AddWithValue("@Deduction", employee.Deductions);
+                    sqlCommand.Parameters.AddWithValue("@IncomeTax", employee.IncomeTax);
+                    sqlCommand.Parameters.AddWithValue("@TaxablePay", employee.TaxablePay);
+                   int result = sqlCommand.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        count++;
+                        Console.WriteLine("Inserted Successfully");
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+            return count;
+         
         }
     }
 }

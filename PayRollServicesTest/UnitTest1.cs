@@ -35,5 +35,24 @@ namespace PayRollServicesTest
             Assert.AreEqual(actual, expected);
 
         }
+        [TestMethod]
+        public void InsertIntoTableTest()
+        {
+           
+            int expected = 1;
+            data.EmployeeName = "Stefan";
+            data.Gender = "Salvatore";
+            data.PhoneNumber = 3245678798;
+            data.Address = "Garden";
+            data.Department = "HR";
+            data.BasicPay = 400000;
+            data.Deductions = 2000;
+            data.TaxablePay = 1000;
+            data.IncomeTax = 1000;
+            
+            int actual = emp.InsertNewRecord(data);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
