@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Data.SqlClient;
 
 namespace EmployeePayroll
@@ -11,8 +12,8 @@ namespace EmployeePayroll
     public class Transaction
     {
         public static string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=employee_payroll";
-
         SqlConnection sqlConnection = new SqlConnection(connectionString);
+        private Object myLock = new Object();
         public int AddRecord(EmployeeData employee)
         {
             PayRollData payRoll = new PayRollData(employee.BasicPay);
@@ -23,7 +24,7 @@ namespace EmployeePayroll
                 SqlTransaction transaction = sqlConnection.BeginTransaction();
                 try
                 {
-                    string emp = "Insert into Employee(Employee_name,Company_Id,PhoneNumber,Address,City,State,StartDate,Gender) values ('" + employee.EmployeeName + "'," + employee.CompanyId + "," + employee.PhoneNumber + ",'" + employee.Address + "','" + employee.City + "','" + employee.State + "','" + employee.StartDate + "','" + employee.Gender + "')";
+                    string emp = "Insert into Employee(Employee_Name,Company_Id,PhoneNumber,Address,City,State,StartDate,Gender) values ('" + employee.EmployeeName + "'," + employee.CompanyId + "," + employee.PhoneNumber + ",'" + employee.Address + "','" + employee.City + "','" + employee.State + "','" + employee.StartDate + "','" + employee.Gender + "')";
                     string payroll = "Insert into PayRoll(Employee_id,BasicPay,Deductions,TaxablePay,IncomeTax,NetPay) values(" + employee.EmployeeId + "," + payRoll.BasicPay + "," + payRoll.Deduction + "," + payRoll.TaxablePay + "," + payRoll.IncomeTax + "," + payRoll.NetPay + ")";
                     string dep = "Insert into Department values (" + employee.EmployeeId + "," + employee.DepartmentId + ")";
                     new SqlCommand(emp, sqlConnection, transaction).ExecuteNonQuery();
@@ -118,7 +119,15 @@ namespace EmployeePayroll
                             employee.Address = reader["Address"] == DBNull.Value ? default : reader["Address"].ToString();
                             employee.NetPay = Convert.ToDouble(reader["NetPay"] == DBNull.Value ? default : reader["NetPay"]);
                             employee.Department = reader["Department_Name"] == DBNull.Value ? default : reader["Department_Name"].ToString();
-                            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.StartDate, employee.PhoneNumber, employee.Address, employee.NetPay);
+                            Thread thread = new Thread(() =>
+                            {
+                                Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.EmployeeId, employee.EmployeeName, employee.Gender, employee.StartDate, employee.PhoneNumber, employee.Address, employee.NetPay);
+                                Console.WriteLine("Current thread:" + Thread.CurrentThread.Name);
+
+                            }
+                            );
+                            thread.Start();
+
                             employeeList.Add(employee);
                         }
                         reader.Close();
@@ -149,35 +158,36 @@ namespace EmployeePayroll
             return (stopwatch.ElapsedMilliseconds);
 
         }
-        void AddData()
-        {
-            AddRecord(new EmployeeData { EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
-            AddRecord(new EmployeeData { EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
-            AddRecord(new EmployeeData { EmployeeName = "Klaus", CompanyId = 1, Address = "GagaStreet", City = "Merton", State = "Mystic", StartDate = "2021-07-17", Gender = "M", PhoneNumber = 8877691323, DepartmentId = 3, BasicPay = 60000 });
-            AddRecord(new EmployeeData { EmployeeName = "Helen", CompanyId = 1, Address = "Lartin", City = "Astro", State = "Keldo", StartDate = "2021-07-16", Gender = "F", PhoneNumber = 887709165, DepartmentId = 1, BasicPay = 7000 });
-        }
         public long InsertWithThread()
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
-            Task thread = new Task(() =>
+            try
             {
-                AddRecord(new EmployeeData { EmployeeId = 12, EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
-                AddRecord(new EmployeeData { EmployeeId = 13, EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
-                AddRecord(new EmployeeData { EmployeeId = 14, EmployeeName = "Klaus", CompanyId = 1, Address = "GagaStreet", City = "Merton", State = "Mystic", StartDate = "2021-07-17", Gender = "M", PhoneNumber = 8877691323, DepartmentId = 3, BasicPay = 60000 });
-                AddRecord(new EmployeeData { EmployeeId = 15, EmployeeName = "Helen", CompanyId = 1, Address = "Lartin", City = "Astro", State = "Keldo", StartDate = "2021-07-16", Gender = "F", PhoneNumber = 887709165, DepartmentId = 1, BasicPay = 7000 });
-            });
-            thread.Start();
-            stopwatch.Stop();
+                lock (myLock)
+                {
+                    List<EmployeeData> details = RetriveDataForAudit("dbo.RetriveData");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                stopwatch.Stop();
+            }
             return stopwatch.ElapsedMilliseconds;
         }
-        void AddDatathread()
+        void AddData()
         {
             AddRecord(new EmployeeData { EmployeeId = 16, EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
             AddRecord(new EmployeeData { EmployeeId = 13, EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
             AddRecord(new EmployeeData { EmployeeId = 14, EmployeeName = "Klaus", CompanyId = 1, Address = "GagaStreet", City = "Merton", State = "Mystic", StartDate = "2021-07-17", Gender = "M", PhoneNumber = 8877691323, DepartmentId = 3, BasicPay = 60000 });
             AddRecord(new EmployeeData { EmployeeId = 15, EmployeeName = "Helen", CompanyId = 1, Address = "Lartin", City = "Astro", State = "Keldo", StartDate = "2021-07-16", Gender = "F", PhoneNumber = 887709165, DepartmentId = 1, BasicPay = 7000 });
         }
+
     }
 }
 
