@@ -13,7 +13,7 @@ namespace EmployeePayroll
         public static string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=employee_payroll";
 
         SqlConnection sqlConnection = new SqlConnection(connectionString);
-        public int AddingRecord(EmployeeData employee)
+        public int AddRecord(EmployeeData employee)
         {
             PayRollData payRoll = new PayRollData(employee.BasicPay);
             using (sqlConnection)
@@ -151,9 +151,35 @@ namespace EmployeePayroll
         }
         void AddData()
         {
-            AddingRecord(new EmployeeData { EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
-            AddingRecord(new EmployeeData { EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
-        } 
+            AddRecord(new EmployeeData { EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
+            AddRecord(new EmployeeData { EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
+            AddRecord(new EmployeeData { EmployeeName = "Klaus", CompanyId = 1, Address = "GagaStreet", City = "Merton", State = "Mystic", StartDate = "2021-07-17", Gender = "M", PhoneNumber = 8877691323, DepartmentId = 3, BasicPay = 60000 });
+            AddRecord(new EmployeeData { EmployeeName = "Helen", CompanyId = 1, Address = "Lartin", City = "Astro", State = "Keldo", StartDate = "2021-07-16", Gender = "F", PhoneNumber = 887709165, DepartmentId = 1, BasicPay = 7000 });
+        }
+        public long InsertWithThread()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Task thread = new Task(() =>
+            {
+                AddRecord(new EmployeeData { EmployeeId = 12, EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
+                AddRecord(new EmployeeData { EmployeeId = 13, EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
+                AddRecord(new EmployeeData { EmployeeId = 14, EmployeeName = "Klaus", CompanyId = 1, Address = "GagaStreet", City = "Merton", State = "Mystic", StartDate = "2021-07-17", Gender = "M", PhoneNumber = 8877691323, DepartmentId = 3, BasicPay = 60000 });
+                AddRecord(new EmployeeData { EmployeeId = 15, EmployeeName = "Helen", CompanyId = 1, Address = "Lartin", City = "Astro", State = "Keldo", StartDate = "2021-07-16", Gender = "F", PhoneNumber = 887709165, DepartmentId = 1, BasicPay = 7000 });
+            });
+            thread.Start();
+            stopwatch.Stop();
+            return stopwatch.ElapsedMilliseconds;
+        }
+        void AddDatathread()
+        {
+            AddRecord(new EmployeeData { EmployeeId = 16, EmployeeName = "Guna", CompanyId = 2, Address = "Zora Palace", City = "Madurai", State = "TamilNadu", StartDate = "2021-07-19", Gender = "M", PhoneNumber = 1234346547, DepartmentId = 3, BasicPay = 65000 });
+            AddRecord(new EmployeeData { EmployeeId = 13, EmployeeName = "Adit", CompanyId = 2, Address = "Incara", City = "Cbe", State = "Kerala", StartDate = "2021-07-18", Gender = "M", PhoneNumber = 8877664422, DepartmentId = 2, BasicPay = 6000 });
+            AddRecord(new EmployeeData { EmployeeId = 14, EmployeeName = "Klaus", CompanyId = 1, Address = "GagaStreet", City = "Merton", State = "Mystic", StartDate = "2021-07-17", Gender = "M", PhoneNumber = 8877691323, DepartmentId = 3, BasicPay = 60000 });
+            AddRecord(new EmployeeData { EmployeeId = 15, EmployeeName = "Helen", CompanyId = 1, Address = "Lartin", City = "Astro", State = "Keldo", StartDate = "2021-07-16", Gender = "F", PhoneNumber = 887709165, DepartmentId = 1, BasicPay = 7000 });
+        }
     }
-
 }
+
+
+

@@ -61,7 +61,7 @@ namespace PayRollServicesTest
             int expected = 1;
             EmployeeData employee = new EmployeeData { EmployeeId = 7, EmployeeName = "Stefan", CompanyId = 1, DepartmentId = 2, PhoneNumber = 987654321, Address = "Garden", City="Mexico",State="kargo", StartDate = "2021-07-29", Gender = "M", BasicPay = 400000 };
             Transaction transaction = new Transaction();
-            int actual = transaction.AddingRecord(employee);
+            int actual = transaction.AddRecord(employee);
             Assert.AreEqual(expected, actual);
 
         }
@@ -76,6 +76,12 @@ namespace PayRollServicesTest
         public void TestInsertWithoutThread()
         {
             long actual = new Transaction().InsertWithoutThread();
+            Console.WriteLine("" + actual);
+        }
+        [TestMethod]
+        public void TestInsertWithThread()
+        {
+            long actual = new Transaction().InsertWithThread();
             Console.WriteLine("" + actual);
         }
 
