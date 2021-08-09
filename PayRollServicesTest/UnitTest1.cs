@@ -84,8 +84,11 @@ namespace PayRollServicesTest
             long actual = new Transaction().InsertWithThread();
             Console.WriteLine("" + actual);
         }
-
-
-
+        [TestMethod]
+        public void TestInsertionWithSynchronization()
+        {
+            long actual = new Transaction().InsertWithThread();
+            Console.WriteLine("" + actual);
+        }
     }
 }
