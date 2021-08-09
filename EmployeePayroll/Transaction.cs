@@ -40,6 +40,30 @@ namespace EmployeePayroll
                 }
             }
         }
+        public int CascadeDelete()
+        {
+            int count= 0;
+            using (sqlConnection)
+            {
+                sqlConnection.Open();
+                SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+                SqlCommand sqlCommand = sqlConnection.CreateCommand();
+                sqlCommand.Transaction = sqlTransaction;
+                try
+                {
+                    sqlCommand.CommandText = "Delete from Employee where Employee_Id='3'";
+                    sqlCommand.ExecuteNonQuery();
+                    count++;
+                    sqlTransaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    sqlTransaction.Rollback();
+                }
+            }
+            return count;
+        }
 
     }
 }

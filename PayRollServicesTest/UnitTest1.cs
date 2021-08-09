@@ -62,6 +62,14 @@ namespace PayRollServicesTest
             Assert.AreEqual(expected, actual);
 
         }
+        [TestMethod]
+        public void TestCascadeDelete()
+        {
+            int expected = 1;
+            int actual = new Transaction().CascadeDelete();
+            Assert.AreEqual(expected, actual);
+        }
+
 
     }
 }
