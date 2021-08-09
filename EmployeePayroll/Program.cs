@@ -9,7 +9,7 @@ namespace EmployeePayroll
             Console.WriteLine("Payroll service database!");
             EmployeeRepo emp = new EmployeeRepo();
             EmployeeData data = new EmployeeData();
-            Console.WriteLine("1.Retrive all data\n2.Update salary\n3.Retirieve Date using Name\n4.Aggregate Functions");
+            Console.WriteLine("1.Retrive all data\n2.Update salary\n3.Retirieve Date using Name\n4.Aggregate Functions\n5.InsertNewRecord");
             Console.Write("Enter your choice:");
             int choice = Convert.ToInt32(Console.ReadLine());
             switch (choice)
@@ -26,6 +26,9 @@ namespace EmployeePayroll
                     break;
                 case 4:
                     emp.AggregateFunctionsGroupByGender();
+                    break;
+                case 5:
+                    emp.InsertNewRecord(data);
                     break;
                 default:
                     break;
